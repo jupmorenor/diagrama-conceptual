@@ -22,10 +22,10 @@ function agregarConcepto(mousepos) {
     .attr('alignment-baseline', 'middle')
     .attr('x', function(d){return d.x})
     .attr('y', function(d){return d.y});
-  grupo.on('mousedown', seleccionar)
-    .on('mouseup', deseleccionar)
-    .call(d3.drag()
-      .on('drag', arrastrar));
+  grupo.call(d3.drag()
+    .on('start', seleccionar)
+    .on('drag', arrastrar)
+    .on('end', deseleccionar));
 }
 
 function seleccionar(d, i) {
