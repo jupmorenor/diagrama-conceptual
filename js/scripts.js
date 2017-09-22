@@ -24,23 +24,29 @@ function agregarConcepto(mousepos) {
     .attr('y', function(d){return d.y});
   grupo.on('mousedown', seleccionar)
     .on('mouseup', deseleccionar)
-    .call(arrastrar);
+    .call(d3.drag()
+      .on('drag', arrastrar));
 }
 
 function seleccionar(d, i) {
   if (d3.event.defaultPrevented) return;
   d3.select(this)
-  .attr('transform', 'translate('+d.x+','+d.y+')')
-  .select('circle').transition()
-  .style('fill', 'gray');
+    .select('circle').transition()
+    .style('fill', 'gray');
 }
 
 function deseleccionar(d, i) {
   if (d3.event.defaultPrevented) return;
-  d3.select(this).select('circle').transition()
-  .style('fill', 'white');
+  d3.select(this)
+    .select('circle').transition()
+    .style('fill', 'white');
 }
 
-function arrastrar() {
-  return;
+function arrastrar(d) {
+  d3.select(this).select('circle')
+    .attr('cx', d.x = d3.event.x)
+    .attr('cy', d.y = d3.event.y); 
+  d3.select(this).select('text')
+    .attr('x', d.x = d3.event.x)
+    .attr('y', d.y = d3.event.y);
 }
