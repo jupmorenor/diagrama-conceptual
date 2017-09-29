@@ -22,8 +22,8 @@ function agregarConcepto(mousepos) {
     .attr('text-anchor', 'middle')
     .attr('alignment-baseline', 'middle')
     .attr('x', function(d){return d.x})
-    .attr('y', function(d){return d.y});
-    //.call(editar_texto, 'texto');
+    .attr('y', function(d){return d.y})
+    .call(editar_texto, 'texto');
   grupo.call(d3.drag()
     .on('start', seleccionar)
     .on('drag', arrastrar)
@@ -41,24 +41,26 @@ function deseleccionar(d, i) {
   if (d3.event.defaultPrevented) return;
   d3.select(this)
     .select('circle').transition()
-    .style('fill', 'white');
+    .style('fill', null);
 }
 
 function arrastrar(d) {
   d3.select(this).select('circle')
     .attr('cx', d.x = d3.event.x)
-    .attr('cy', d.y = d3.event.y); 
+    .attr('cy', d.y = d3.event.y);
   d3.select(this).select('text')
     .attr('x', d.x = d3.event.x)
     .attr('y', d.y = d3.event.y);
 }
 
 function editar_texto(d, campo) {
-  //revisar seleccion del elemento correcto
-  console.log('texto', arguments);
-  d3.select(this).select('text').on('click', function(d){
+  d.on('mouseover', function() {
+    d3.select(this).style('fill', 'red');
+  }).on('mouseout', function() {
+    d3.select(this).style('fill', null);
+  }).on('click', function(d){
     var parent = this.parentNode;
-    var xy = d3.select(this).getBBox();
+    var xy = this.getBBox();
     var p_xy = parent.getBBox();
     xy.x -= p_xy.x;
     xy.y -= p_xy.y;
@@ -68,9 +70,9 @@ function editar_texto(d, campo) {
     var inp = editable
       .attr('x', xy.x)
       .attr('y', xy.y)
-      .attr("width", 300)
-      .attr("height", 25)
-      .append('xhtml:form')
+      .attr('width', 300)
+      .attr('height', 25)
+      .append("xhtml:form")
         .append('input')
         .attr('value', function() {
           this.focus();
@@ -89,7 +91,7 @@ function editar_texto(d, campo) {
             if (ev.stopPropagation)
               ev.stopPropagation();
             ev.preventDefault();
-            var txt = inpp.node().value;
+            var txt = inp.node().value;
             d[campo] = txt;
             elem.text(function(d){ return d[campo]; });
             p_el.select('foreignObject').remove();
